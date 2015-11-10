@@ -1,0 +1,38 @@
+{
+  "name": "lacona-command-settings",
+  "version": "0.0.1",
+  "os": ["osx"],
+  "description": "Lacona Command for modifying system settings",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "clean": "rimraf lib",
+    "prepublish": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brandonhorst/lacona-command-settings.git"
+  },
+  "keywords": [
+    "lacona",
+    "command",
+    "settings"
+  ],
+  "author": "@brandonhorst",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brandonhorst/lacona-command-settings/issues"
+  },
+  "homepage": "https://github.com/brandonhorst/lacona-command-settings",
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "chai": "^3.2.0",
+    "lacona": "^0.27.0",
+    "mocha": "^2.2.5",
+    "rimraf": "^2.4.2"
+  },
+  "dependencies": {
+    "lacona-phrase": "^0.7.0",
+    "lacona-phrase-datetime": "^0.3.1"
+  }
+}
