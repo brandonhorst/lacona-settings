@@ -82,6 +82,10 @@ export class Sentence extends Phrase {
   }
 }
 
+export default {
+  sentences: [{Sentence, execute}]
+}
+
 // export default {
 //   sentences: [OpenApp],
 //   translations: [{
