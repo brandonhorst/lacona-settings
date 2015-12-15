@@ -1,7 +1,9 @@
 {
   "name": "lacona-command-settings",
   "version": "0.0.1",
-  "os": ["osx"],
+  "os": [
+    "osx"
+  ],
   "description": "Lacona Command for modifying system settings",
   "main": "lib/index.js",
   "scripts": {
@@ -33,6 +35,7 @@
   },
   "dependencies": {
     "lacona-phrase": "^0.7.0",
-    "lacona-phrase-datetime": "^0.3.1"
+    "lacona-phrase-datetime": "^0.3.1",
+    "lodash": "^3.10.1"
   }
 }
