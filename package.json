@@ -1,13 +1,10 @@
 {
   "name": "lacona-command-settings",
   "version": "0.0.1",
-  "os": [
-    "osx"
-  ],
   "description": "Lacona Command for modifying system settings",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "babel --stage 0 src --out-dir lib",
     "clean": "rimraf lib",
     "prepublish": "npm run clean && npm run build"
   },
@@ -29,12 +26,12 @@
   "devDependencies": {
     "babel": "^5.8.21",
     "chai": "^3.2.0",
-    "lacona": "^0.27.0",
+    "lacona": "^0.35.0",
     "mocha": "^2.2.5",
     "rimraf": "^2.4.2"
   },
   "dependencies": {
-    "lacona-phrase": "^0.7.0",
+    "lacona-phrase": "^0.9.1",
     "lacona-phrase-datetime": "^0.3.1",
     "lodash": "^3.10.1"
   }
