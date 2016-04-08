@@ -1,13 +1,11 @@
 /** @jsx createElement */
 
 import _ from 'lodash'
-import { createElement, Phrase } from 'lacona-phrase'
-import { TimeDuration } from 'lacona-phrase-datetime'
-import { MountedVolume } from 'lacona-phrase-system'
+import { createElement } from 'elliptical'
+import { TimeDuration } from 'elliptical-datetime'
+import { MountedVolume } from 'lacona-phrases'
 import { Command, BooleanSetting } from 'lacona-command'
-import { setWifi, setDoNotDisturb, setBluetooth, setVolume, checkBluetooth, checkDoNotDisturb, checkVolume, checkWifi } from 'lacona-api'
-
-// I am distressed about the amount of OO BS that is in this file
+import { setWifi, setDoNotDisturb, setBluetooth, setVolume, checkBluetooth, checkDoNotDisturb, checkVolume, checkWifi, setDarkMode, checkDarkMode } from 'lacona-api'
 
 class EnabledSettingObject { //Abstract
   constructor ({invert = false} = {}) {
@@ -41,6 +39,14 @@ class BluetoothEnabledObject extends EnabledSettingObject {
   checkEnabled (done) { checkBluetooth(done) }
 }
 
+class DarkModeEnabledObject extends EnabledSettingObject {
+  name = 'dark mode'
+
+  setEnabled (enabled) { setDarkMode({enabled}) }
+
+  checkEnabled (done) { checkDarkMode(done) }
+}
+
 class DoNotDisturbEnabledObject extends EnabledSettingObject {
   name = 'Do Not Disturb'
 
@@ -69,119 +75,91 @@ class MuteEnabledObject extends EnabledSettingObject {
   }
 }
 
-class BaseSetting extends Phrase {
-  static extends = [BooleanSetting]
-
-  describe () {
-    return (
-      <map function={this.objectify}>
-        <label text='setting'>
-          {this.elements()}
-        </label>
-      </map>
-    )
+function createSetting (mapResult, element) {
+  return {
+    extends: [BooleanSetting],
+    mapResult,
+    describe () {
+      return <label text='setting'>{element}</label>
+    }
   }
 }
 
-export class BluetoothSetting extends BaseSetting {
-  objectify (result) {
-    return new BluetoothEnabledObject(result)
-  }
+export const BluetoothSetting = createSetting(
+  (result) => new BluetoothEnabledObject(result),
+  <literal text='bluetooth' />
+)
 
-  elements () {
-    return <literal text='bluetooth' />
-  }
-}
+export const DarkModeSetting = createSetting(
+  (result) => new DarkModeEnabledObject(result),
+  <list items={[
+    {text: 'dark mode'},
+    {text: 'light mode', value: {invert: true}}
+  ]} />
+)
 
-export class DoNotDisturbSetting extends BaseSetting {
-  objectify (result) {
-    return new DoNotDisturbEnabledObject(result)
-  }
+export const DoNotDisturbSetting = createSetting(
+  (result) => new DoNotDisturbEnabledObject(result),
+  <list limit={1} items={[
+    {text: 'Do Not Disturb'},
+    {text: 'notifications', value: {invert: true}},
+  ]} />
+)
 
-  elements () {
-    return <list limit={1} items={[
-      {text: 'Do Not Disturb'},
-      {text: 'notifications', value: {invert: true}},
-    ]} />
-  }
-}
+export const WifiSetting = createSetting(
+  (result) => new WifiEnabledObject(result),
+  <literal text='wifi' />
+)
 
-export class WifiSetting extends BaseSetting {
-  objectify (result) {
-    return new WifiEnabledObject(result)
-  }
+export const MuteSetting = createSetting(
+  (result) => new MuteEnabledObject(result),
+  <list limit={2} items={[
+    {text: 'mute'},
+    {text: 'sound', value: {invert: true}},
+    {text: 'the sound', value: {invert: true}},
+    {text: 'audio', value: {invert: true}}
+  ]} />
+)
 
-  elements () {
-    return <literal text='wifi' />
-  }
-}
-
-export class MuteSetting extends BaseSetting {
-  objectify (result) {
-    return new MuteEnabledObject(result)
-  }
-
-  elements () {
-    return <list limit={2} items={[
-      {text: 'mute'},
-      {text: 'sound', value: {invert: true}},
-      {text: 'the sound', value: {invert: true}},
-      {text: 'audio', value: {invert: true}}
-    ]} />
-  }
-}
-
-class DoNotDisturbCommandObject {
-  _demoExecute () {
-    return [{text: 'turn on ', category: 'action'}, {text: 'Do Not Disturb', argument: 'setting'}]
-  }
+export const DoNotDisturbCommand = {
+  extends: [Command],
 
   execute () {
     setDoNotDisturb({enabled: true})
-  }
-}
+  },
 
-export class DoNotDisturbCommand extends Phrase {
-  static extends = [Command]
+  _demoExecute () {
+    return [{text: 'turn on ', category: 'action'}, {text: 'Do Not Disturb', argument: 'setting'}]
+  },
 
   describe () {
     return <list items={[
       'do not disturb',
       'do not disturb me'
-    ]} value={new DoNotDisturbCommandObject()} limit={1} category='action' />
+    ]} limit={1} category='action' />
   }
 }
 
-class MuteCommandObject {
-  constructor (result = true) {
-    this.mute = result
-  }
+export const MuteCommand = {
+  extends: [Command],
 
   _demoExecute () {
     return [{text: this.mute ? 'mute' : 'unmute', category: 'action'}, {text: ' the audio'}]
-  }
+  },
 
-  execute () {
-    setVolume({mute: this.mute})
-  }
-}
-
-export class MuteCommand extends Phrase {
-  static extends = [Command]
+  execute (result = true) {
+    setVolume({mute: result})
+  },
 
   describe () {
-    return (
-      <map function={result => new MuteCommandObject(result)}>
-        <list items={[
-          {text: 'mute'},
-          {text: 'unmute', value: false}
-        ]} limit={1} category='action' />
-      </map>
-    )
+    return <list items={[
+      {text: 'mute'},
+      {text: 'unmute', value: false}
+    ]} limit={1} category='action' />
   }
 }
 
-export const extensions = [BluetoothSetting, WifiSetting, DoNotDisturbSetting, MuteSetting, DoNotDisturbCommand, MuteCommand]
+export const extensions = [BluetoothSetting, DarkModeSetting, WifiSetting, DoNotDisturbSetting, MuteSetting, DoNotDisturbCommand, MuteCommand]
 
 // export default {
 //   sentences: [OpenApp],
