@@ -128,7 +128,7 @@ export const DoNotDisturbCommand = {
     setDoNotDisturb({enabled: true})
   },
 
-  _demoExecute () {
+  demoExecute () {
     return [{text: 'turn on ', category: 'action'}, {text: 'Do Not Disturb', argument: 'setting'}]
   },
 
@@ -143,17 +143,17 @@ export const DoNotDisturbCommand = {
 export const MuteCommand = {
   extends: [Command],
 
-  _demoExecute () {
-    return [{text: this.mute ? 'mute' : 'unmute', category: 'action'}, {text: ' the audio'}]
+  demoExecute (result) {
+    return [{text: result ? 'mute' : 'unmute', category: 'action'}, {text: ' the audio'}]
   },
 
-  execute (result = true) {
+  execute (result) {
     setVolume({mute: result})
   },
 
   describe () {
     return <list items={[
-      {text: 'mute'},
+      {text: 'mute', value: true},
       {text: 'unmute', value: false}
     ]} limit={1} category='action' />
   }
