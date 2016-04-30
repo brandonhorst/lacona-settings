@@ -5,7 +5,7 @@ import { createElement } from 'elliptical'
 import { TimeDuration } from 'elliptical-datetime'
 import { MountedVolume } from 'lacona-phrases'
 import { Command, BooleanSetting } from 'lacona-command'
-import { setWifi, setDoNotDisturb, setBluetooth, setVolume, checkBluetooth, checkDoNotDisturb, checkVolume, checkWifi, setDarkMode, checkDarkMode } from 'lacona-api'
+import { setWifi, setDoNotDisturb, setBluetooth, setVolume, checkBluetooth, checkDoNotDisturb, checkVolume, checkWifi, setDarkMode, checkDarkMode, openLaconaPreferences} from 'lacona-api'
 
 class EnabledSettingObject { //Abstract
   constructor ({invert = false} = {}) {
@@ -159,7 +159,30 @@ export const MuteCommand = {
   }
 }
 
-export const extensions = [BluetoothSetting, DarkModeSetting, WifiSetting, DoNotDisturbSetting, MuteSetting, DoNotDisturbCommand, MuteCommand]
+export const OpenLaconaPreferencesCommand = {
+  extends: [Command],
+
+  demoExecute (result) {
+    return [{text: 'open the Lacona Preferences'}]
+  },
+
+  execute () {
+    openLaconaPreferences()
+  },
+
+  describe () {
+    return (
+      <sequence>
+        <list items={['open ', 'show ']} />
+        <label text='preference pane'>
+          <list items={['Lacona Preferences', 'Lacona Settings']} strategy='fuzzy' />
+        </label>
+      </sequence>
+    )
+  }
+}
+
+export const extensions = [BluetoothSetting, DarkModeSetting, WifiSetting, DoNotDisturbSetting, MuteSetting, DoNotDisturbCommand, MuteCommand, OpenLaconaPreferencesCommand]
 
 // export default {
 //   sentences: [OpenApp],
