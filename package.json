@@ -1,6 +1,6 @@
 {
   "name": "lacona-settings",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Lacona Command for modifying system settings",
   "main": "lib/index.js",
   "scripts": {
