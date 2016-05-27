@@ -2,9 +2,7 @@
 
 import _ from 'lodash'
 import { createElement } from 'elliptical'
-import { TimeDuration } from 'elliptical-datetime'
-import { MountedVolume } from 'lacona-phrases'
-import { Command, BooleanSetting } from 'lacona-command'
+import { Command, BooleanSetting } from 'lacona-phrases'
 import { setWifi, setDoNotDisturb, setBluetooth, setVolume, checkBluetooth, checkDoNotDisturb, checkVolume, checkWifi, setDarkMode, checkDarkMode, openLaconaPreferences} from 'lacona-api'
 
 class EnabledSettingObject { //Abstract
@@ -182,16 +180,4 @@ export const OpenLaconaPreferencesCommand = {
   }
 }
 
-export const extensions = [BluetoothSetting, DarkModeSetting, WifiSetting, DoNotDisturbSetting, MuteSetting, DoNotDisturbCommand, MuteCommand, OpenLaconaPreferencesCommand]
-
-// export default {
-//   sentences: [OpenApp],
-//   translations: [{
-//     langs: ['en', 'default'],
-//     information: {
-//       title: 'Open Application',
-//       description: 'Quickly launch applications on your computer',
-//       examples: ['open Safari', 'open Contacts']
-//     }
-//   }]
-// }
+export default [BluetoothSetting, DarkModeSetting, WifiSetting, DoNotDisturbSetting, MuteSetting, DoNotDisturbCommand, MuteCommand, OpenLaconaPreferencesCommand]
