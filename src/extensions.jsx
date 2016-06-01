@@ -77,8 +77,12 @@ function createSetting (mapResult, element) {
   return {
     extends: [BooleanSetting],
     mapResult,
-    describe () {
-      return <label text='setting'>{element}</label>
+    describe ({props}) {
+      return (
+        <label text='setting' suppressEmpty={props.suppressEmpty}>
+          {element}
+        </label>
+      )
     }
   }
 }
