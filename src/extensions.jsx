@@ -19,12 +19,8 @@ class EnabledSettingObject { //Abstract
   }
 
   toggle () {
-    this.checkEnabled((err, {enabled}) => {
-      if (err) {
-        return console.error(err)
-      } else {
-        this.setEnabled(!enabled)
-      }
+    this.checkEnabled().then(({enabled}) => {
+      this.setEnabled(!enabled)
     })
   }
 }
@@ -34,7 +30,7 @@ class BluetoothEnabledObject extends EnabledSettingObject {
 
   setEnabled (enabled) { setBluetooth({enabled}) }
 
-  checkEnabled (done) { checkBluetooth(done) }
+  checkEnabled () { return checkBluetooth() }
 }
 
 class DarkModeEnabledObject extends EnabledSettingObject {
@@ -42,7 +38,7 @@ class DarkModeEnabledObject extends EnabledSettingObject {
 
   setEnabled (enabled) { setDarkMode({enabled}) }
 
-  checkEnabled (done) { checkDarkMode(done) }
+  checkEnabled () { return checkDarkMode() }
 }
 
 class DoNotDisturbEnabledObject extends EnabledSettingObject {
@@ -50,7 +46,7 @@ class DoNotDisturbEnabledObject extends EnabledSettingObject {
 
   setEnabled (enabled) { setDoNotDisturb({enabled}) }
 
-  checkEnabled (done) { checkDoNotDisturb(done) }
+  checkEnabled () { return checkDoNotDisturb() }
 }
 
 class WifiEnabledObject extends EnabledSettingObject {
@@ -58,7 +54,7 @@ class WifiEnabledObject extends EnabledSettingObject {
   
   setEnabled (enabled) { setWifi({enabled}) }
 
-  checkEnabled (done) { checkWifi(done) }
+  checkEnabled () { return checkWifi() }
 }
 
 class MuteEnabledObject extends EnabledSettingObject {
@@ -66,9 +62,9 @@ class MuteEnabledObject extends EnabledSettingObject {
     setVolume({mute})
   }
 
-  checkEnabled (done) {
-    checkVolume((err, {mute}) => {
-      done(err, {enabled: mute})
+  checkEnabled () {
+    return checkVolume().then(({mute}) => {
+      return {enabled: mute}
     })
   }
 }
