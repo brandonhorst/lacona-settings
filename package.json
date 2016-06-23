@@ -1,6 +1,6 @@
 {
   "name": "lacona-settings",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lacona Command for modifying system settings",
   "scripts": {
     "build": "babel src --out-dir lib",
