@@ -75,9 +75,9 @@ function createSetting (mapResult, element) {
     mapResult,
     describe ({props}) {
       return (
-        <label text='setting' suppressEmpty={props.suppressEmpty}>
+        <placeholder argument='setting' suppressEmpty={props.suppressEmpty}>
           {element}
-        </label>
+        </placeholder>
       )
     }
   }
@@ -172,9 +172,9 @@ export const OpenLaconaPreferencesCommand = {
     return (
       <sequence>
         <list items={['open ', 'show ']} />
-        <label text='preference pane'>
+        <placeholder argument='preference pane'>
           <list items={['Lacona Preferences', 'Lacona Settings']} strategy='fuzzy' />
-        </label>
+        </placeholder>
       </sequence>
     )
   }
