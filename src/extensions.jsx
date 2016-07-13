@@ -2,128 +2,108 @@
 
 import _ from 'lodash'
 import { createElement } from 'elliptical'
-import { Command, BooleanSetting } from 'lacona-phrases'
+import { Command, BooleanSetting, BooleanCommand } from 'lacona-phrases'
 import { setWifi, setDoNotDisturb, setBluetooth, setVolume, checkBluetooth, checkDoNotDisturb, checkVolume, checkWifi, setDarkMode, checkDarkMode, openLaconaPreferences} from 'lacona-api'
 
-class EnabledSettingObject { //Abstract
-  constructor ({invert = false} = {}) {
-    this.invert = !!invert
-  }
-
-  enable () {
-    this.setEnabled(!this.invert)
-  }
-
-  disable () {
-    this.setEnabled(this.invert)
-  }
-
-  toggle () {
-    this.checkEnabled().then(({enabled}) => {
-      this.setEnabled(!enabled)
-    })
-  }
+function wrapSetting (element, props) {
+  return <placeholder argument='setting' suppressEmpty={props.suppressEmpty}>{element}</placeholder>
 }
 
-class BluetoothEnabledObject extends EnabledSettingObject {
-  name = 'bluetooth'
+export const BluetoothSetting = {
+  extends: [BooleanSetting],
 
-  setEnabled (enabled) { setBluetooth({enabled}) }
+  setSetting (enabled) {
+    setBluetooth({enabled})
+  },
 
-  checkEnabled () { return checkBluetooth() }
-}
+  getSetting () {
+    return checkBluetooth().then(({enabled}) => enabled)
+  },
 
-class DarkModeEnabledObject extends EnabledSettingObject {
-  name = 'dark mode'
-
-  setEnabled (enabled) { setDarkMode({enabled}) }
-
-  checkEnabled () { return checkDarkMode() }
-}
-
-class DoNotDisturbEnabledObject extends EnabledSettingObject {
-  name = 'Do Not Disturb'
-
-  setEnabled (enabled) { setDoNotDisturb({enabled}) }
-
-  checkEnabled () { return checkDoNotDisturb() }
-}
-
-class WifiEnabledObject extends EnabledSettingObject {
-  name = 'Wifi'
-  
-  setEnabled (enabled) { setWifi({enabled}) }
-
-  checkEnabled () { return checkWifi() }
-}
-
-class MuteEnabledObject extends EnabledSettingObject {
-  setEnabled (mute) {
-    setVolume({mute})
-  }
-
-  checkEnabled () {
-    return checkVolume().then(({mute}) => {
-      return {enabled: mute}
-    })
+  describe ({props}) {
+    return wrapSetting(<literal text='bluetooth' />, props)
   }
 }
 
-function createSetting (mapResult, element) {
-  return {
-    extends: [BooleanSetting],
-    mapResult,
-    describe ({props}) {
-      return (
-        <placeholder argument='setting' suppressEmpty={props.suppressEmpty}>
-          {element}
-        </placeholder>
-      )
-    }
+export const DarkModeSetting = {
+  extends: [BooleanSetting],
+
+  setSetting (enabled) {
+    setDarkMode({enabled})
+  },
+
+  getSetting () {
+    return checkDarkMode().then(({enabled}) => enabled)
+  },
+
+  describe ({props}) {
+    return wrapSetting(<list items={[
+      {text: 'dark mode'},
+      {text: 'light mode', value: false}
+    ]} />, props)
   }
 }
 
-export const BluetoothSetting = createSetting(
-  (result) => new BluetoothEnabledObject(result),
-  <literal text='bluetooth' />
-)
+export const DoNotDisturbSetting = {
+  extends: [BooleanSetting],
+  setSetting (enabled) {
+    setDoNotDisturb({enabled})
+  },
 
-export const DarkModeSetting = createSetting(
-  (result) => new DarkModeEnabledObject(result),
-  <list items={[
-    {text: 'dark mode'},
-    {text: 'light mode', value: {invert: true}}
-  ]} />
-)
+  getSetting () {
+    return checkDoNotDisturb().then(({enabled}) => enabled)
+  },
 
-export const DoNotDisturbSetting = createSetting(
-  (result) => new DoNotDisturbEnabledObject(result),
-  <list limit={1} items={[
-    {text: 'Do Not Disturb'},
-    {text: 'notifications', value: {invert: true}},
-  ]} />
-)
+  describe ({props}) {
+    return wrapSetting(<list limit={1} items={[
+      {text: 'Do Not Disturb'},
+      {text: 'notifications', value: false},
+    ]} />, props)
+  }
+}
 
-export const WifiSetting = createSetting(
-  (result) => new WifiEnabledObject(result),
-  <literal text='wifi' />
-)
+export const WifiSetting = {
+  extends: [BooleanSetting],
+  setSetting (enabled) {
+    setWifi({enabled})
+  },
 
-export const MuteSetting = createSetting(
-  (result) => new MuteEnabledObject(result),
-  <list limit={2} items={[
-    {text: 'mute'},
-    {text: 'sound', value: {invert: true}},
-    {text: 'the sound', value: {invert: true}},
-    {text: 'audio', value: {invert: true}}
-  ]} />
-)
+  getSetting () {
+    return checkWifi().then(({enabled}) => enabled)
+  },
+
+  describe ({props}) {
+    return wrapSetting(<literal text='wifi' />, props)
+  }
+}
+
+export const MuteSetting = {
+  extends: [BooleanSetting],
+  setSetting (enabled) {
+    setVolume({mute: !!enabled})
+  },
+  getSetting () {
+    return checkVolume().then(({mute}) => mute)
+  },
+  describe ({props}) {
+    return wrapSetting(<list limit={2} items={[
+      {text: 'mute'},
+      {text: 'sound', value: false},
+      {text: 'the sound', value: false},
+      {text: 'audio', value: false}
+    ]} />, props)
+  }
+}
+
+// export const MuteSetting = createSetting(
+//   (result) => new MuteEnabledObject(result),
+// )
 
 export const DoNotDisturbCommand = {
-  extends: [Command],
+  extends: [BooleanCommand],
 
-  execute () {
-    setDoNotDisturb({enabled: true})
+  execute (result) {
+    setDoNotDisturb({enabled: result})
   },
 
   demoExecute () {
@@ -134,26 +114,26 @@ export const DoNotDisturbCommand = {
     return <list items={[
       'do not disturb',
       'do not disturb me'
-    ]} limit={1} category='action' />
+    ]} limit={1} />
   }
 }
 
 export const MuteCommand = {
-  extends: [Command],
+  extends: [BooleanCommand],
 
   demoExecute (result) {
     return [{text: result ? 'mute' : 'unmute', category: 'action'}, {text: ' the audio'}]
   },
 
   execute (result) {
-    setVolume({mute: result})
+    setVolume({mute: !!result})
   },
 
   describe () {
     return <list items={[
       {text: 'mute', value: true},
       {text: 'unmute', value: false}
-    ]} limit={1} category='action' />
+    ]} limit={1} />
   }
 }
 
