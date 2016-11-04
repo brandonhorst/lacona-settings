@@ -2,6 +2,11 @@
   "name": "lacona-settings",
   "version": "1.0.0",
   "description": "Lacona Command for modifying system settings",
+  "lacona": {
+    "title": "System Settings",
+    "customPreferences": true,
+    "description": "Set various system settings on-the-fly."
+  },
   "scripts": {
     "build": "babel src --out-dir lib",
     "clean": "rimraf lib",

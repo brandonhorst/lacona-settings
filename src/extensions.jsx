@@ -20,7 +20,9 @@ export const BluetoothSetting = {
     return checkBluetooth().then(({enabled}) => enabled)
   },
 
-  describe ({props}) {
+  describe ({props, config}) {
+    if (!config.enableBluetooth) return
+
     return wrapSetting(<literal text='bluetooth' />, props)
   }
 }
@@ -36,7 +38,9 @@ export const DarkModeSetting = {
     return checkDarkMode().then(({enabled}) => enabled)
   },
 
-  describe ({props}) {
+  describe ({props, config}) {
+    if (!config.enableDarkMode) return
+
     return wrapSetting(<list items={[
       {text: 'dark mode'},
       {text: 'light mode', value: false}
@@ -54,7 +58,9 @@ export const DoNotDisturbSetting = {
     return checkDoNotDisturb().then(({enabled}) => enabled)
   },
 
-  describe ({props}) {
+  describe ({props, config}) {
+    if (!config.enableDoNotDisturb) return
+
     return wrapSetting(<list limit={1} items={[
       {text: 'Do Not Disturb'},
       {text: 'notifications', value: false},
@@ -72,7 +78,9 @@ export const WifiSetting = {
     return checkWifi().then(({enabled}) => enabled)
   },
 
-  describe ({props}) {
+  describe ({props, config}) {
+    if (!config.enableWifi) return
+
     return wrapSetting(<literal text='wifi' />, props)
   }
 }
@@ -85,7 +93,9 @@ export const MuteSetting = {
   getSetting () {
     return checkVolume().then(({mute}) => mute)
   },
-  describe ({props}) {
+  describe ({props, config}) {
+    if (!config.enableMute) return 
+
     return wrapSetting(<list limit={2} items={[
       {text: 'mute'},
       {text: 'sound', value: false},
@@ -110,7 +120,9 @@ export const DoNotDisturbCommand = {
     return [{text: 'turn on ', category: 'action'}, {text: 'Do Not Disturb', argument: 'setting'}]
   },
 
-  describe () {
+  describe ({config}) {
+    if (!config.enableDoNotDisturb) return
+
     return <list items={[
       'do not disturb',
       'do not disturb me'
@@ -129,7 +141,9 @@ export const MuteCommand = {
     setVolume({mute: !!result})
   },
 
-  describe () {
+  describe ({config}) {
+    if (!config.enableMute) return
+      
     return <list items={[
       {text: 'mute', value: true},
       {text: 'unmute', value: false}
@@ -153,7 +167,7 @@ export const OpenLaconaPreferencesCommand = {
       <sequence>
         <list items={['open ', 'show ']} />
         <placeholder argument='preference pane'>
-          <list items={['Lacona Preferences', 'Lacona Settings']} strategy='fuzzy' />
+          <list items={['Lacona Preferences', 'Lacona Settings']} strategy='contain' limit={1} />
         </placeholder>
       </sequence>
     )

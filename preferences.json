@@ -1,0 +1,37 @@
+{
+  "settingsHeader": {
+    "type": "header",
+    "examples": [
+      "enable [bluetooth](setting)",
+      "disable [wifi](setting) for [25 minutes](time duration)",
+      "toggle [Do Not Disturb](setting)",
+      "mute for [30 seconds](time duration)",
+      "enable [dark mode](setting)"
+    ]
+  },
+  "enableBluetooth": {
+    "title": "Enable Bluetooth Setting",
+    "type": "boolean",
+    "default": true
+  },
+  "enableWifi": {
+    "title": "Enable Wifi Setting",
+    "type": "boolean",
+    "default": true
+  },
+  "enableDoNotDisturb": {
+    "title": "Enable Do Not Disturb Setting",
+    "type": "boolean",
+    "default": true
+  },
+  "enableMute": {
+    "title": "Enable Mute Setting",
+    "type": "boolean",
+    "default": true
+  },
+  "enableDarkMode": {
+    "title": "Enable Dark Mode Setting",
+    "type": "boolean",
+    "default": true
+  }
+}
